@@ -20,7 +20,7 @@ substitutions:
 #Repository Specific configuration. DevOps can change this settings
     _DEPLOYMENTNAME: hello-world-service
     _CONTAINERNAME: hello-world-service    
-    _REPO_NAME: cloudbuild
+    _REPO_NAME: github_vinodhini-devops_cloudbuild
     
     # Developers ONLY change
     _VERSION: v1.0
