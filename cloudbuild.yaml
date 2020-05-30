@@ -11,14 +11,41 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push','gcr.io/${_PROJECT}/${_CONTAINERNAME}:${_VERSION}']
 
-#Update the container image using kubectl set
+#Create deployment using kubectl set
 - name: 'gcr.io/cloud-builders/kubectl'
   args: ['create', 'deployment', '${_DEPLOYMENTNAME}','--image=gcr.io/${_PROJECT}/${_CONTAINERNAME}:${_VERSION}']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=${_ZONE}'
   - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
   
+#Get the deployments
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['get', 'deployments']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=${_ZONE}'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}' 
   
+#Get the pods
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['get', 'pods']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=${_ZONE}'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
+  
+#Expose as Service using kubectl set
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['expose', 'deployment', '${_DEPLOYMENTNAME}', '--type=LoadBalancer', '--port 80', '--target-port 8080']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=${_ZONE}'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
+
+#Get the services
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['get', 'svc']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=${_ZONE}'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
+
 substitutions:
     #GCP Specific configuration. Please DON'T change anything
     _PROJECT: nice-gate-272207
