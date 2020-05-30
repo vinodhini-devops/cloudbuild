@@ -10,7 +10,20 @@ steps:
 #Push the image  
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push','gcr.io/${_PROJECT}/${_CONTAINERNAME}:${_VERSION}']
- 
+
+#Update the container image using kubectl set    
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+  - set
+  - image
+  - deployment
+  - hello-world-test
+  - web=gcr.io/${_PROJECT}/${_CONTAINERNAME}:${_VERSION}
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=${_ZONE}'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
+  
+  
 substitutions:
     #GCP Specific configuration. Please DON'T change anything
     _PROJECT: nice-gate-272207
@@ -25,14 +38,4 @@ substitutions:
     # Developers ONLY change
     _VERSION: v1.0
     
-#Update the container image using kubectl set    
-- name: 'gcr.io/cloud-builders/kubectl'
-  args:
-  - set
-  - image
-  - deployment
-  - hello-world-test
-  - web=gcr.io/${_PROJECT}/${_CONTAINERNAME}:${_VERSION}
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=${_ZONE}'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
+
