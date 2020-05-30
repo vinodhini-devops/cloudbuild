@@ -17,7 +17,7 @@ steps:
   - set
   - image
   - deployment
-  - hello-world-test
+  - hello-world-service
   - web=gcr.io/${_PROJECT}/${_CONTAINERNAME}:${_VERSION}
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=${_ZONE}'
